@@ -1,0 +1,58 @@
+<template>
+  <q-page>
+    <div class="full-width text-primary row inline">
+      <q-card class="col q-ma-sm" v-for="sch in schedules" :key="sch.id">
+        <q-item class="bg-primary text-white">
+          <q-item-main class="ellipsis cursor-pointer" @click.native="onEditSchedule($event, sch.id)">
+            <q-item-tile label class="q-title text-white ellipsis">{{sch.name}}</q-item-tile>
+            <q-item-tile sublabel class="text-white ellipsis">{{sch.description}}</q-item-tile>
+          </q-item-main>
+          <q-item-side right class="text-white">
+            <div class="row inline">
+              <q-icon class="col cursor-pointer" name="close" @click.native.prevent="onRemoveSchedule($event, sch.id)"/>
+            </div>
+          </q-item-side>
+        </q-item>
+        <q-card-main>
+          Card Content
+        </q-card-main>
+      </q-card>
+    </div>
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn round color="primary" icon="add" @click="onAddSchedule"/>
+    </q-page-sticky>
+  </q-page>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  name: 'schedules',
+  computed: {
+    ...mapState({
+      schedules: state => state.schedules
+    })
+  },
+  methods: {
+    onRemoveSchedule (evt, id) {
+      this.$store.commit('REMOVE_SCHEDULE', id)
+    },
+    onEditSchedule (evt, id) {
+      this.$router.push({name: 'ScheduleConfig', params: {id: id}})
+    },
+    onAddSchedule () {
+      let newSchId = Object.keys(this.schedules).length + 1
+      this.$store.commit('ADD_SCHEDULE', {
+        id: newSchId,
+        name: 'New schedule ' + newSchId,
+        description: 'new schedule ' + newSchId + ' description'
+      })
+      this.onEditSchedule({}, newSchId)
+    }
+  }
+}
+</script>
+
+<style scoped>
+</style>
