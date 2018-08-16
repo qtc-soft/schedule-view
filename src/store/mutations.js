@@ -18,5 +18,8 @@ export default {
   },
   REMOVE_SCHEDULE (state, id) {
     Vue.delete(state.schedules, id)
+  },
+  CALENDAR_MODE (state, value) {
+    Vue.set(state, 'calendar_mode', value)
   }
 }

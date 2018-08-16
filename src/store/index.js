@@ -43,6 +43,7 @@ const store = new Vuex.Store(
           name: 'Schedule 2'
         }
       },
+      calendar_mode: 'tab-month',
       //
       social: {}
     },

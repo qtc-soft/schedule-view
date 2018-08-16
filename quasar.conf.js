@@ -69,7 +69,10 @@ module.exports = function (ctx) {
         'QPageSticky',
         'QField',
         'QInput',
-        'QModal'
+        'QModal',
+        'QTabs',
+        'QTab',
+        'QTabPane'
       ],
       directives: [
         'Ripple'
