@@ -1,14 +1,15 @@
 <template>
   <q-page>
     <div class="full-width text-primary row inline">
-      <q-card class="col q-ma-sm" v-for="sch in schedules" :key="sch.id">
-        <q-item class="bg-primary text-white">
+      <q-card class="col q-ma-sm" v-for="sch in schedules" :key="sch.id" style="min-width: 250px">
+        <q-item class="bg-primary text-white" style="min-height: 58px">
           <q-item-main class="ellipsis cursor-pointer" @click.native="onEditSchedule($event, sch.id)">
             <q-item-tile label class="q-title text-white ellipsis">{{sch.name}}</q-item-tile>
             <q-item-tile sublabel class="text-white ellipsis">{{sch.description}}</q-item-tile>
           </q-item-main>
           <q-item-side right class="text-white">
             <div class="row inline">
+              <q-icon class="col cursor-pointer" name="settings" @click.native.prevent="onConfigSchedule($event, sch.id)"/>
               <q-icon class="col cursor-pointer" name="close" @click.native.prevent="onRemoveSchedule($event, sch.id)"/>
             </div>
           </q-item-side>
@@ -38,12 +39,15 @@ export default {
     onRemoveSchedule (evt, id) {
       this.$store.commit('REMOVE_SCHEDULE', id)
     },
-    onEditSchedule (evt, id) {
+    onConfigSchedule (evt, id) {
       this.$router.push({name: 'ScheduleConfig', params: {id: id}})
+    },
+    onEditSchedule (evt, id) {
+      this.$router.push({name: 'Schedule', params: {id: id}})
     },
     onAddSchedule () {
       let newSchId = Object.keys(this.schedules).length + 1
-      this.$store.commit('ADD_SCHEDULE', {
+      this.$store.commit('SCHEDULE_ADD', {
         id: newSchId,
         name: 'New schedule ' + newSchId,
         description: 'new schedule ' + newSchId + ' description'

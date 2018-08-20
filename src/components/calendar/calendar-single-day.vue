@@ -1,9 +1,9 @@
 <template>
   <div class="full-width text-tertiary">
-    <div class="full-width row inline border-bottom q-py-sm">
-      <div class="col-1 arrow-left cursor-pointer text-center"><q-btn icon="keyboard_arrow_left" @click.native="onBackDay()"/></div>
-      <div class="col-10 month q-headline text-center">{{dayTitle}}</div>
-      <div class="col-1 arrow-right cursor-pointer text-center"><q-btn icon="keyboard_arrow_right" @click.native="onForwardDay()"/></div>
+    <div class="full-width row inline border-bottom q-pa-sm">
+      <div class="col arrow-left cursor-pointer text-center" style="min-width: 30px;max-width: 30px"><q-btn icon="keyboard_arrow_left" @click.native="onBackDay()"/></div>
+      <div class="col month q-headline text-center">{{dayTitle}}</div>
+      <div class="col arrow-right cursor-pointer text-center" style="min-width: 30px;max-width: 30px"><q-btn icon="keyboard_arrow_right" @click.native="onForwardDay()"/></div>
     </div>
     <div class="full-width column inline">
       <div class="row q-subheading calendar-day-cell border-bottom"  v-for="(h, i) in dayData" :key="i" @click="showDayEventDialog=true">

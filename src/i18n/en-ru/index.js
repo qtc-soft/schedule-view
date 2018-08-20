@@ -17,6 +17,7 @@ export default {
   payment: 'Платежи',
   instruments: 'Инструменты',
   all_schedules: 'Все расписания',
+  schedule: 'Расписание',
   create_schedule: 'Создать расписание',
   edit_schedule: 'Редактировать расписание',
   schedule_config: 'Свойства расписания',
@@ -92,5 +93,8 @@ export default {
   October: 'Октябрь',
   November: 'Ноябрь',
   December: 'Декабрь',
-  h: 'ч'
+  h: 'ч',
+  date: 'Дата',
+  time: 'Время',
+  clients: 'Клиенты'
 }

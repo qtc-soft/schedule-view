@@ -72,7 +72,8 @@ module.exports = function (ctx) {
         'QModal',
         'QTabs',
         'QTab',
-        'QTabPane'
+        'QTabPane',
+        'QDatetime'
       ],
       directives: [
         'Ripple'

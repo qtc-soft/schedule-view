@@ -4,8 +4,7 @@ import { Notify, Cookies, date } from 'quasar'
 export default {
   data () {
     return {
-      // eventHub: new Vue(),
-      keyAPIAll: 'all'
+      TIME_ZONE_OFFSET: -(new Date()).getTimezoneOffset() * 60 * 60 * 1000
     }
   },
   computed: {

@@ -1,57 +1,69 @@
 <template>
-  <div class="full-width text-tertiary">
-    <div class="full-width row inline border-bottom q-py-sm">
-      <div class="col-1 arrow-left cursor-pointer text-center"><q-btn icon="keyboard_arrow_left" @click.native="onBackMonth()"/></div>
-      <div class="col-10 month q-headline text-center">{{getCurrentYear()}}   {{$t(monthNames[getCurrentMonth()])}}</div>
-      <div class="col-1 arrow-right cursor-pointer text-center"><q-btn icon="keyboard_arrow_right" @click.native="onForwardMonth()"/></div>
+  <div class="calendar-month full-width text-tertiary">
+    <div class="full-width row inline border-bottom q-pa-sm">
+      <div class="col arrow-left cursor-pointer text-center" style="min-width: 30px;max-width: 30px"><q-btn icon="keyboard_arrow_left" @click.native="onBackMonth()"/></div>
+      <div class="col month q-headline text-center">{{getCurrentYear()}}   {{$t(monthNames[getCurrentMonth()])}}</div>
+      <div class="col arrow-right cursor-pointer text-center" style="min-width: 30px;max-width: 30px"><q-btn icon="keyboard_arrow_right" @click.native="onForwardMonth()"/></div>
     </div>
     <div class="full-width row inline border-bottom">
-      <div class="col q-subheading text-center content-center calendar-week-day q-my-sm"  v-for="(d, i) in weekDays" :key="i">{{$t(d)}}</div>
+      <div class="col q-subheading text-center content-center calendar-month-week-day q-my-sm"  v-for="(d, i) in weekDays" :key="i">{{$t(d)}}</div>
     </div>
     <div class="full-width row inline border-bottom" v-for="(weekData, i) in monthData" :key="i">
       <div
-        :class="`col q-subheading calendar-month-cell ${(dayData && dayData.t && dayData.t.getTime() === todayStart ? 'calendar-today bg-secondary' : '')}`"
+        :class="`col q-subheading calendar-month-cell ${(dayData && dayData.time === todayStart ? 'calendar-today bg-secondary' : '')}`"
         v-for="(dayData, j) in weekData"
         :key="j"
-        @click="onWeekClick($event, i, dayData)"
+        @click="onDayClick($event, dayData)"
       >
-        <span class="cursor-pointer q-pr-sm" @click="onDateClick($event, dayData)">
+        <span class="calendar-month-date cursor-pointer" @click="onDateClick($event, dayData)">
           {{dayData.date}}
         </span>
-        {{expanded}}
-        <div style="height: calc(100% - 20px)" v-show="expanded[i]"></div>
+        <div class="q-caption" style="height: calc(100% - 20px)">
+          {{0}} / {{dayTimeItemsInfo[dayData.time] ? dayTimeItemsInfo[dayData.time].length : 0}}
+        </div>
       </div>
-      <div class="full-width bg-primary" style="height: 100px" v-show="expanded[i]">123</div>
+      <calendar-day-time-info class="full-width border-top" v-show="currentDay && currentDay.weekId === i"/>
     </div>
-    <!-- q-modal v-model="showDayEventDialog">
-      <calendar-day-events></calendar-day-events>
-    </q-modal -->
   </div>
 </template>
 
 <script>
 import { date } from 'quasar'
+import { mapState } from 'vuex'
 import CalendarDayEvents from './calendar-day-events'
+import CalendarDayTimeInfo from './calendar-day-time-info'
 
 const TODAY = new Date()
 
 export default {
   name: 'CalendarMonth',
-  components: {CalendarDayEvents},
+  components: {CalendarDayEvents, CalendarDayTimeInfo},
   data () {
     return {
-      // weekDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+      weekDaysFull: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       weekDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
       monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       // current time
       currentTime: TODAY,
       // today begining
-      todayStart: date.startOfDate(TODAY, 'day').getTime(),
-      showDayEventDialog: false,
-      expanded: {}
+      todayStart: date.startOfDate(TODAY, 'day').getTime()
     }
   },
   computed: {
+    ...mapState({
+      schedules: state => state.schedules || {},
+      currentDay: state => state.calendar_current_day || {},
+      scheduleDetails: state => { return state.scheduleDetails || {} }
+    }),
+    schedule_id () {
+      return this.$route && this.$route.params ? this.$route.params.id : null
+    },
+    schedule () {
+      return this.schedules[this.schedule_id]
+    },
+    details () {
+      return this.scheduleDetails[this.schedule_id] || []
+    },
     monthData () {
       let result = []
       // calculate begining of the current week
@@ -69,19 +81,31 @@ export default {
         // create week array with empty value
         let week = new Array(7).fill(0).map((val, i) => {
           let res
-          debugger
+          // debugger
           if (startTime.getMonth() === startMonth) {
-            res = { t: startTime, date: startTime.getDate() }
+            res = {fullTime: startTime, time: startTime.getTime(), date: startTime.getDate(), weekId: result.length}
           } else {
             res = {date: ''}
           }
           // add one day
-          startTime = date.addToDate(startTime, { days: 1 })
+          startTime = date.addToDate(startTime, {days: 1})
           return res
         })
         result.push(week)
       }
       return result
+    },
+    dayTimeItemsInfo () {
+      let res = {}
+      let schId = this.schedule_id
+      this.monthData.forEach(week => {
+        week.forEach(d => {
+          if (d && d.time && d.fullTime) {
+            res[d.time] = this.$store.getters.dayTimeItems(schId, d.fullTime) || []
+          }
+        })
+      })
+      return res
     }
   },
   methods: {
@@ -95,28 +119,30 @@ export default {
     onBackYear () { this.currentTime = date.subtractFromDate(this.currentTime, {year: 1}) },
     onForwardMonth () { this.currentTime = date.addToDate(this.currentTime, {month: 1}) },
     onBackMonth () { this.currentTime = date.subtractFromDate(this.currentTime, {month: 1}) },
-    onWeekClick (evt, weekIndex, dayData) {
-      console.log(evt, weekIndex, dayData)
-      this.expanded[weekIndex] = !this.expanded[weekIndex]
-    },
-    onDayClick () {
-      this.showEventDialog = true
+    onDayClick (evt, dayData) {
+      if (this.currentDay === dayData) {
+        this.$store.commit('CALENDAR_CURRENT_DAY', null)
+      } else {
+        this.$store.commit('CALENDAR_CURRENT_DAY', dayData)
+      }
     },
     onDateClick (evt, data) {
       // change calendar mode on 'tab-single-day-component'
       // this.$store.commit('CALENDAR_MODE', 'tab-single-day-component')
-      this.$emit('calendar-change-mode', {mode: 'tab-single-day-component', time: data.t})
+      this.$emit('calendar-change-mode', {mode: 'tab-single-day-component', time: data.time})
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="stylus">
+  @import '~variables'
   .calendar-month-cell {
     position: relative;
     padding: 5px;
     height: 70px;
     border-right: 1px solid lightgrey;
+    cursor: pointer;
   }
   .calendar-month-cell:hover:before {
     content: '';
@@ -130,7 +156,10 @@ export default {
   .calendar-today {
     color: white;
   }
-  .calendar-week-day {
+  .calendar-month-date:hover {
+    color: $secondary;
+  }
+  .calendar-month-week-day {
     padding: 0 5px;
     border-right: 1px solid lightgrey;
   }
