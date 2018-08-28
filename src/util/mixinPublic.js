@@ -15,7 +15,7 @@ export default {
   methods: {
     // load authData from cookies
     loadFromCookieToStore () {
-      let authData = Cookies.get('travelpts-authData')
+      let authData = Cookies.get('sch-authData')
       if (authData) {
         this.$store.dispatch('login', authData)
       }

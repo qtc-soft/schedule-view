@@ -4,12 +4,17 @@ const routes = [
     path: '/',
     component: () => import('layouts/index.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { path: '', name: 'IndexPage', component: () => import('pages/Index.vue') },
+      { path: '/login', name: 'LoginPage', component: () => import('pages/auth/Login.vue') },
+      { path: '/registration', name: 'RegistrationPage', component: () => import('pages/auth/Registration.vue') },
+      { path: '/restore_pass', name: 'RestorePassPage', component: () => import('pages/auth/Restore.vue') },
+      { path: '/contacts', name: 'ContactsPage', component: () => import('pages/Contacts.vue') }
     ]
   },
   // social pages
-  { path: '/account',
+  { path: '/panel',
     component: () => import('layouts/accountPanel'),
+    redirect: {name: 'ScheduleList'},
     children: [
       // settings
       { path: '/options', name: 'AccountOptions', component: () => import('pages/account/options'), meta: {label: 'account_settings', icon: 'settings'} },

@@ -1,15 +1,21 @@
 <template>
-  <div>
-    <calendar />
+  <div class="inline full-width" style="position: relative">
+    <calendar class="column full-width"/>
+    <div class="column full-width absolute-bottom bg-white" v-show="currentDay && currentDay.time" style="min-width: 270px;" ref="timeForm">
+      <calendar-day-time-info class="full-width" :showDetails="calendarMode === 'tab-month'"/>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import Calendar from '../../../components/calendar/main'
+import CalendarDayTimeInfo from '../../../components/calendar/calendar-day-time-info'
 
 export default {
   name: 'Schedule',
-  components: { Calendar },
+  components: { Calendar, CalendarDayTimeInfo },
   data () {
     return {
       calendarData: [
@@ -49,10 +55,14 @@ export default {
       ]
     }
   },
-  methods: {
-    onClick (evt) {
-      console.log(evt)
-    }
+  computed: {
+    ...mapState({
+      weekDaysFullNames: state => state.weekDaysFullNames,
+      weekDaysShortNames: state => state.weekDaysShortNames || [],
+      monthNames: state => state.monthNames || [],
+      calendarMode: state => state.calendar_mode,
+      currentDay: state => state.calendar_current_day || {}
+    })
   }
 }
 </script>

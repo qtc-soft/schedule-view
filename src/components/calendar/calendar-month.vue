@@ -1,29 +1,32 @@
 <template>
   <div class="calendar-month full-width text-tertiary">
-    <div class="full-width row inline border-bottom q-pa-sm">
+    <div class="full-width row border-bottom q-pa-sm">
       <div class="col arrow-left cursor-pointer text-center" style="min-width: 30px;max-width: 30px"><q-btn icon="keyboard_arrow_left" @click.native="onBackMonth()"/></div>
       <div class="col month q-headline text-center">{{getCurrentYear()}}   {{$t(monthNames[getCurrentMonth()])}}</div>
       <div class="col arrow-right cursor-pointer text-center" style="min-width: 30px;max-width: 30px"><q-btn icon="keyboard_arrow_right" @click.native="onForwardMonth()"/></div>
     </div>
-    <div class="full-width row inline border-bottom">
-      <div class="col q-subheading text-center content-center calendar-month-week-day q-my-sm"  v-for="(d, i) in weekDays" :key="i">{{$t(d)}}</div>
+    <div class="full-width row border-bottom">
+      <div class="calendar-month-week-day col q-subheading text-center content-center"  v-for="(d, i) in weekDaysShortNames" :key="i">
+        <div class="q-my-sm">{{$t(d)}}</div>
+      </div>
     </div>
-    <div class="full-width row inline border-bottom" v-for="(weekData, i) in monthData" :key="i">
+    <q-scroll-area style="height: calc(100% - 100px)">
+      <div class="full-width row inline border-bottom" v-for="(weekData, i) in monthData" :key="i">
       <div
-        :class="`col q-subheading calendar-month-cell ${(dayData && dayData.time === todayStart ? 'calendar-today bg-secondary' : '')}`"
+        :class="`calendar-cell calendar-month-cell col q-subheading ${('time' in dayData && dayData.time === currentDay.time ? 'calendar-selected-cell' : '')} ${(dayData && dayData.time === todayStart ? 'calendar-today' : '')}`"
         v-for="(dayData, j) in weekData"
         :key="j"
         @click="onDayClick($event, dayData)"
       >
-        <span class="calendar-month-date cursor-pointer" @click="onDateClick($event, dayData)">
+        <span class="calendar-month-date cursor-pointer">
           {{dayData.date}}
         </span>
-        <div class="q-caption" style="height: calc(100% - 20px)">
-          {{0}} / {{dayTimeItemsInfo[dayData.time] ? dayTimeItemsInfo[dayData.time].length : 0}}
+        <div class="calendar-month-date-text q-caption" v-show="dayTimeItemsInfo[dayData.time] && dayTimeItemsInfo[dayData.time].length">
+          <div style="bottom: 0">{{0}} / {{dayTimeItemsInfo[dayData.time] ? dayTimeItemsInfo[dayData.time].length : 0}}</div>
         </div>
       </div>
-      <calendar-day-time-info class="full-width border-top" v-show="currentDay && currentDay.weekId === i"/>
     </div>
+    </q-scroll-area>
   </div>
 </template>
 
@@ -33,24 +36,21 @@ import { mapState } from 'vuex'
 import CalendarDayEvents from './calendar-day-events'
 import CalendarDayTimeInfo from './calendar-day-time-info'
 
-const TODAY = new Date()
-
 export default {
   name: 'CalendarMonth',
+  props: ['time'],
   components: {CalendarDayEvents, CalendarDayTimeInfo},
   data () {
     return {
-      weekDaysFull: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      weekDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
-      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       // current time
-      currentTime: TODAY,
-      // today begining
-      todayStart: date.startOfDate(TODAY, 'day').getTime()
+      currentTime: new Date()
     }
   },
   computed: {
     ...mapState({
+      TODAY: state => state.TODAY,
+      weekDaysShortNames: state => state.weekDaysShortNames || [],
+      monthNames: state => state.monthNames || [],
       schedules: state => state.schedules || {},
       currentDay: state => state.calendar_current_day || {},
       scheduleDetails: state => { return state.scheduleDetails || {} }
@@ -61,9 +61,9 @@ export default {
     schedule () {
       return this.schedules[this.schedule_id]
     },
-    details () {
-      return this.scheduleDetails[this.schedule_id] || []
-    },
+    // today begining
+    todayStart () { return date.startOfDate(this.TODAY, 'day').getTime() },
+    // data for each day in month
     monthData () {
       let result = []
       // calculate begining of the current week
@@ -83,7 +83,7 @@ export default {
           let res
           // debugger
           if (startTime.getMonth() === startMonth) {
-            res = {fullTime: startTime, time: startTime.getTime(), date: startTime.getDate(), weekId: result.length}
+            res = {fullTime: startTime, time: startTime.getTime(), date: startTime.getDate()}
           } else {
             res = {date: ''}
           }
@@ -125,12 +125,15 @@ export default {
       } else {
         this.$store.commit('CALENDAR_CURRENT_DAY', dayData)
       }
-    },
-    onDateClick (evt, data) {
-      // change calendar mode on 'tab-single-day-component'
-      // this.$store.commit('CALENDAR_MODE', 'tab-single-day-component')
-      this.$emit('calendar-change-mode', {mode: 'tab-single-day-component', time: data.time})
     }
+    // onDateClick (evt, data) {
+    //   // change calendar mode on 'tab-single-day-component'
+    //   // this.$store.commit('CALENDAR_MODE', 'tab-single-day-component')
+    //   this.$emit('calendar-change-mode', {mode: 'tab-single-day-component', time: data.time})
+    // }
+  },
+  mounted () {
+    this.currentTime = date.startOfDate(this.time || this.TODAY, 'month')
   }
 }
 </script>
@@ -138,29 +141,30 @@ export default {
 <style lang="stylus">
   @import '~variables'
   .calendar-month-cell {
-    position: relative;
     padding: 5px;
-    height: 70px;
+    height: 50px;
     border-right: 1px solid lightgrey;
-    cursor: pointer;
-  }
-  .calendar-month-cell:hover:before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 3px;
-    height: 100%;
-    background-color: #a2ad37;
-  }
-  .calendar-today {
-    color: white;
-  }
-  .calendar-month-date:hover {
-    color: $secondary;
   }
   .calendar-month-week-day {
     padding: 0 5px;
     border-right: 1px solid lightgrey;
+  }
+  .calendar-month-date {
+    padding: 2px;
+    margin: 2px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+  }
+  // .calendar-month-date:hover {
+  //  border-color: $primary-dark;
+  // }
+  .calendar-month-date-text {
+    position: relative;
+    height: calc(100% - 20px);
+    div {
+      position: absolute;
+      bottom: 0px;
+      right: 0;
+    }
   }
 </style>

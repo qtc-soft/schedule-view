@@ -13,6 +13,11 @@ Vue.use(Vuex)
 const store = new Vuex.Store(
   {
     state: {
+      menuItem: null,
+      TODAY: new Date(),
+      weekDaysFullNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      weekDaysShortNames: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
+      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       // authorization data
       authenticatedData: {
         id: 1,

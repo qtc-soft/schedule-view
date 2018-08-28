@@ -10,8 +10,13 @@ export default {
       Vue.set(state, data.type, data.token)
     }
   },
-  SCHEDULE_ADD (state, data) {
-    Vue.set(state.schedules, data.id, data)
+  MENU_ITEM (state, data) {
+    Vue.set(state, 'menu_item', data)
+  },
+  INIT_ITEMS (state, data) {
+    let res = {}
+    data.items.forEach(d => { res[d.id] = d })
+    Vue.set(state, data.type, res)
   },
   SCHEDULE_DETAILS_ADD (state, data) {
     let schData

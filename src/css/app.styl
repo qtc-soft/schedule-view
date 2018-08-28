@@ -1,4 +1,5 @@
 // app global css
+@import '~variables'
 
 .border-bottom {
   border-bottom: 1px solid lightgray;
@@ -18,4 +19,31 @@
 
 .q-btn {
   padding: 0 5px;
+}
+
+.calendar-today {
+  background-color: $primary-light;
+}
+.calendar-cell {
+  position: relative;
+  cursor: pointer;
+}
+.calendar-cell:hover:before,
+.calendar-selected-cell:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background-color: $primary;
+}
+
+.link {
+  cursor: pointer;
+  color: $secondary-dark;
+}
+
+.link:hover {
+  color: $secondary;
 }

@@ -96,5 +96,17 @@ export default {
   h: 'ч',
   date: 'Дата',
   time: 'Время',
-  clients: 'Клиенты'
+  clients: 'Клиенты',
+  help: 'Помощь',
+  home: 'Главная',
+  contacts: 'Контакты',
+  confirm: 'Подтвердить',
+  account_already_exists: 'Уже есть аккаунт',
+  forget_password: 'Забыли пароль?',
+  restore_password: 'Восстановить пароль',
+  restore_text: 'Для получения нового пароля укажите e-mail или телефон, которые вы использовали при регистрации',
+  restore_text2: 'На указанный номер был отправлен код подтверждения',
+  enter_code: 'Введите код',
+  restore_code: 'Не удалось получить код?',
+  send_code_more: 'Отправить код повторно?'
 }

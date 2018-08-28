@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="full-width text-primary row inline">
+    <q-scroll-area class="full-width full-height text-primary row inline">
       <q-card class="col q-ma-sm" v-for="sch in schedules" :key="sch.id" style="min-width: 250px">
         <q-item class="bg-primary text-white" style="min-height: 58px">
           <q-item-main class="ellipsis cursor-pointer" @click.native="onEditSchedule($event, sch.id)">
@@ -18,7 +18,7 @@
           Card Content
         </q-card-main>
       </q-card>
-    </div>
+    </q-scroll-area>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn round color="primary" icon="add" @click="onAddSchedule"/>
     </q-page-sticky>
@@ -45,14 +45,13 @@ export default {
     onEditSchedule (evt, id) {
       this.$router.push({name: 'Schedule', params: {id: id}})
     },
-    onAddSchedule () {
-      let newSchId = Object.keys(this.schedules).length + 1
-      this.$store.commit('SCHEDULE_ADD', {
-        id: newSchId,
-        name: 'New schedule ' + newSchId,
-        description: 'new schedule ' + newSchId + ' description'
-      })
-      this.onEditSchedule({}, newSchId)
+    async onAddSchedule () {
+      let newSch = await this.$dbAPI.createSchedules([{
+        name: 'New schedule',
+        description: 'new schedule description'
+      }])
+      this.$store.commit('SAVE_SCHEDULE', newSch)
+      this.onConfigSchedule({}, newSch)
     }
   }
 }

@@ -14,6 +14,8 @@
 
 <script>
 import { date } from 'quasar'
+import { mapState } from 'vuex'
+
 export default {
   name: 'calendar-day-time-form',
   props: ['dayTimeInfo'],
@@ -29,12 +31,31 @@ export default {
       this.time = value && value.time ? value.time - date.startOfDate(value.time, 'day') : 21600000
     }
   },
+  computed: {
+    ...mapState({
+      currentDay: state => state.calendar_current_day || {}
+    }),
+    schedule_id () {
+      return this.$route && this.$route.params ? this.$route.params.id : null
+    }
+  },
   methods: {
     onAddTime () {
-      this.$emit('add-time', {
-        time: this.time,
-        clients: this.clients
-      })
+      // collect data
+      let dayInfo = {
+        time: this.currentDay.time + this.time,
+        clients: this.clients,
+        description: ''
+      }
+      this.$emit('add-time', dayInfo)
+      // add data to storage
+      if (this.schedule_id) {
+        this.$store.commit('SCHEDULE_DETAILS_ADD', {
+          schedule_id: this.schedule_id,
+          detail: dayInfo
+        })
+      }
+      // change current time, add 1 houre
       if (this.time < 23 * 60 * 60 * 1000) {
         this.time += 60 * 60 * 1000
       } else {

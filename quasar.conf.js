@@ -36,9 +36,18 @@ module.exports = function (ctx) {
       }
     },
     devServer: {
+      proxy: {
+        // proxy all requests starting with /api to jsonplaceholder
+        '/api': {
+          target: 'http://localhost:7777',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api': ''
+          }
+        }
+      },
       // https: true,
-      // port: 8080,
-      open: true // opens browser window automatically
+      open: false // opens browser window automatically
     },
     // framework: 'all' --- includes everything; for dev only!
     framework: {
@@ -73,7 +82,8 @@ module.exports = function (ctx) {
         'QTabs',
         'QTab',
         'QTabPane',
-        'QDatetime'
+        'QDatetime',
+        'QResizeObservable'
       ],
       directives: [
         'Ripple'

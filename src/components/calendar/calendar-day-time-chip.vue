@@ -35,8 +35,11 @@ export default {
 <style lang="stylus">
   @import '~variables'
   .calendar-day-time-chip {
-    margin-right: 10px;
+    margin: 2px 10px 2px 0;
     border: 1px solid lightgrey;
+  }
+  .calendar-day-time-chip:last-child {
+    margin-right: 0;
   }
   .calendar-day-time-chip:hover {
     border: 1px solid $primary

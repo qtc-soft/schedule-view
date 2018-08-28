@@ -1,12 +1,10 @@
 // plugin for requests to MGate
 import baseMethods from './_base_methods'
 
-import MapApi from './dbApi/_map'
-import Tags from './dbApi/_tags'
 import Auth from './dbApi/_authorization'
 import Users from './dbApi/_users'
-import Points from './dbApi/_points'
-import Tracks from './dbApi/_tracks'
+import Schedules from './dbApi/_schedules'
+import ScheduleDetails from './dbApi/_schedule_details'
 
 // plugin MGate
 let MGateExtApiPlugin = {}
@@ -21,12 +19,10 @@ MGateExtApiPlugin.install = function (Vue, options) {
     apiClient: baseMethods.createApiClient(options),
     // api-paths
     api_paths: {
-      ...Tags.api_paths,
       ...Auth.api_paths,
       ...Users.api_paths,
-      ...MapApi.api_paths,
-      ...Points.api_paths,
-      ...Tracks.api_paths
+      ...Schedules.api_paths,
+      ...ScheduleDetails.api_paths
     },
 
     // BASE-METHODS
@@ -38,12 +34,10 @@ MGateExtApiPlugin.install = function (Vue, options) {
     ...baseMethods.methods,
 
     // API-METHODS:
-    ...Tags.apiMethods,
     ...Auth.apiMethods,
     ...Users.apiMethods,
-    ...MapApi.apiMethods,
-    ...Points.apiMethods,
-    ...Tracks.apiMethods
+    ...Schedules.apiMethods,
+    ...ScheduleDetails.apiMethods
   }
 
   // register in Vue

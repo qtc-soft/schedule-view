@@ -7,40 +7,39 @@
       >
         <q-toolbar-title>
           {{$t('app_name')}}
-          <div slot="subtitle">{{$t('app_description')}}</div>
+          <span slot="subtitle">{{$t('app_description')}}</span>
         </q-toolbar-title>
-        <span class="cursor-pointer" @click="showLoginPanel=true;showRegisterPanel=false">{{$t('authorization')}}</span>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-        <span class="cursor-pointer" @click="showLoginPanel=false;showRegisterPanel=true">{{$t('registration')}}</span>
+        <q-btn flat round dense icon="menu" v-if="menuMini" @click="showMenuMini=!showMenuMini"/>
+        <span v-else class="q-mx-lg">
+          <span>
+            <span class="cursor-pointer q-mr-md" @click="$router.push({name: 'IndexPage'})">{{$t('home')}}</span>/
+            <span class="cursor-pointer q-ml-md" @click="$router.push({name: 'ContactsPage'})">{{$t('contacts')}}</span>
+          </span>
+        </span>
+        <q-btn icon="enter" flat dance round  class="cursor-pointer" v-if="isAuthenticated" @click="$router.push({name: 'LoginPage'})">{{$t('enter')}}</q-btn>
+        <q-btn icon="person" flat dance round class="cursor-pointer" v-else @click="$router.push({name: 'ScheduleList'})">{{$t('panel')}}</q-btn>
       </q-toolbar>
     </q-layout-header>
     <!-- page body -->
     <q-page-container>
+      <q-list class="full-width" v-show="menuMini && showMenuMini">
+        <q-item class="cursor-pointer" @click.native="$router.push({name: 'IndexPage'});showMenuMini=!showMenuMini">{{$t('home')}}</q-item>
+        <q-item class="cursor-pointer" @click.native="$router.push({name: 'ContactsPage'});showMenuMini=!showMenuMini">{{$t('contacts')}}</q-item>
+      </q-list>
       <router-view />
-      <!-- auth dialogs -->
-      <q-modal v-model="showLoginPanel">
-        <login-form v-on:success="onLogin($event)" v-on:failed="onLogin($event)"></login-form>
-      </q-modal>
-      <q-modal v-model="showRegisterPanel">
-        <registration-form v-on:success="onRegister($event)" v-on:failed="onRegister($event)"></registration-form>
-      </q-modal>
+      <q-resize-observable @resize="onResize" />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import LoginForm from '../components/auth/loginForm'
-import RegistrationForm from '../components/auth/registrationForm'
 
 export default {
   name: 'index',
-  components: {
-    LoginForm,
-    RegistrationForm
-  },
   data () {
     return {
-      showLoginPanel: false,
-      showRegisterPanel: false
+      showMenuMini: false,
+      menuMini: this.$q.platform.is.desktop && document.body.clientWidth >= 700
     }
   },
   computed: {
@@ -49,13 +48,8 @@ export default {
     }
   },
   methods: {
-    onLogin (data) {
-      this.showLoginPanel = false
-      this.showRegisterPanel = false
-    },
-    onRegister (data) {
-      this.showLoginPanel = false
-      this.showRegisterPanel = false
+    onResize () {
+      this.menuMini = !(this.$q.platform.is.desktop && document.body.clientWidth >= 700)
     }
   }
 }

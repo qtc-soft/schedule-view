@@ -8,24 +8,24 @@ export default {
     async getPoints (params, m) {
       params = params || {}
       // data from request
-      let res = await this._get(`point/${getValueByParam(params.ids)}`, calcGetParams(params, ['name', 'fields']))
+      let res = await this._get(`schedule-details/${getValueByParam(params.ids)}`, calcGetParams(params, ['name', 'fields', 'schedule_ids']))
       return res
     },
     async createPoints (data, params, m = true) {
       params = params || {}
       // data from request
-      let res = await this._post('point', calcGetParams(params, ['fields']), data, m)
+      let res = await this._post('schedule-details', calcGetParams(params, ['fields']), data, m)
       return res
     },
     async updatePoints (data, params, m = true) {
       params = params || {}
-      let res = await this._put('point', calcGetParams(params, ['fields']), data, m)
+      let res = await this._put('schedule-details', calcGetParams(params, ['fields']), data, m)
       return res
     },
     async deletePoints (params, m) {
       params = params || {}
       // data from request
-      let res = await this._delete(`point/${getValueByParam(params.ids)}`, {})
+      let res = await this._delete(`schedule-details/${getValueByParam(params.ids)}`, {})
       return res
     }
   }

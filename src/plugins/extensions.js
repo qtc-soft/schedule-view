@@ -2,6 +2,8 @@ import AsyncComputed from 'vue-async-computed'
 import { Vuelidate, validationMixin } from 'vuelidate'
 import mixinPublic from '../util/mixinPublic'
 
+import BootstrapVue from 'bootstrap-vue'
+
 import dbApiPlugin from './dbApiPlugin'
 
 // leave the export, even if you don't use it
@@ -15,6 +17,8 @@ export default ({ app, router, Vue }) => {
   // use validator
   Vue.use(Vuelidate)
   Vue.mixin(validationMixin)
+
+  Vue.use(BootstrapVue)
 
   // use api
   // axios.defaults.baseURL = '/api'

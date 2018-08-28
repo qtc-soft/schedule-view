@@ -1,14 +1,9 @@
 <template>
-  <div class="row inline q-pa-sm">
-    <div class="col" style="min-width: 270px">
-      <div class="q-subheading ellipsis">
-        {{title}}
-      </div>
-      <calendar-day-time-form v-on:add-time="onAddTime" :dayTimeInfo="chipTimeInfo"/>
-    </div>
-    <div class="col" style="min-width: 270px">
-      <div class="row inline q-pa-sm">
-        <calendar-day-time-chip class="col"
+  <div class="column inline q-pa-sm">
+    <div class="row" style="min-width: 270px" v-if="showDetails && dayInfoItems.length">
+      <div class="row inline q-my-lg">
+        <calendar-day-time-chip
+          class="col"
           v-if="dayInfoItems.length"
           v-for="(dayInfoItem, i) in dayInfoItems"
           :key="i"
@@ -17,6 +12,12 @@
           v-on:remove="onChipRemove"
         />
       </div>
+    </div>
+    <div class="row" style="min-width: 270px">
+      <div class="q-subheading ellipsis">
+        {{title}}
+      </div>
+      <calendar-day-time-form :dayTimeInfo="chipTimeInfo"/>
     </div>
   </div>
 </template>
@@ -30,17 +31,20 @@ import CalendarDayTimeChip from './calendar-day-time-chip'
 
 export default {
   name: 'calendar-day-time-info',
+  props: {
+    showDetails: {type: Boolean, default: true}
+  },
   components: {CalendarDayTimeForm, CalendarDayTimeChip},
   data () {
     return {
-      weekDaysFull: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      weekDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
-      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       chipTimeInfo: {}
     }
   },
   computed: {
     ...mapState({
+      TODAY: state => state.TODAY,
+      weekDaysFullNames: state => state.weekDaysFullNames,
+      monthNames: state => state.monthNames || [],
       currentDay: state => state.calendar_current_day || {},
       schedules: state => { return state.schedules || {} },
       scheduleDetails: state => { return state.scheduleDetails || {} }
@@ -51,12 +55,9 @@ export default {
     schedule () {
       return this.schedules[this.schedule_id]
     },
-    details () {
-      return this.scheduleDetails[this.schedule_id] || []
-    },
     title () {
       if (this.currentDay && this.currentDay.fullTime) {
-        return `${this.$t(this.monthNames[this.currentDay.fullTime.getMonth()])} ${this.currentDay.fullTime.getDate()}, ${this.$t(this.weekDaysFull[this.currentDay.fullTime.getDay()])}`
+        return `${this.$t(this.monthNames[this.currentDay.fullTime.getMonth()])} ${this.currentDay.fullTime.getDate()}, ${this.$t(this.weekDaysFullNames[this.currentDay.fullTime.getDay()])}`
       } else {
         return ''
       }
