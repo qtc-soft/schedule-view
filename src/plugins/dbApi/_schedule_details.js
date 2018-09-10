@@ -5,27 +5,33 @@ export default {
   // paths
   apiMethods: {
     // get all points or some point by id
-    async getPoints (params, m) {
+    async getScheduleDetails (params, m) {
       params = params || {}
       // data from request
-      let res = await this._get(`schedule-details/${getValueByParam(params.ids)}`, calcGetParams(params, ['name', 'fields', 'schedule_ids']))
+      let res = await this._get(`schedule-details/${getValueByParam(params.ids)}`, calcGetParams(params, ['ids', 'name', 'fields']), m)
       return res
     },
-    async createPoints (data, params, m = true) {
+    async createScheduleDetails (data, params, m) {
       params = params || {}
       // data from request
       let res = await this._post('schedule-details', calcGetParams(params, ['fields']), data, m)
       return res
     },
-    async updatePoints (data, params, m = true) {
+    async updateScheduleDetails (data, params, m) {
       params = params || {}
       let res = await this._put('schedule-details', calcGetParams(params, ['fields']), data, m)
       return res
     },
-    async deletePoints (params, m) {
+    async deleteScheduleDetails (params, m) {
       params = params || {}
       // data from request
-      let res = await this._delete(`schedule-details/${getValueByParam(params.ids)}`, {})
+      let res = await this._delete(`schedule-details/${getValueByParam(params.ids)}`, {}, m)
+      return res
+    },
+    async getScheduleOrders (params, m) {
+      params = params || {}
+      // data from request
+      let res = await this._get(`schedule-orders/${getValueByParam(params.ids)}`, calcGetParams(params, ['ids', 'name', 'schedules', 'customers', 'status']), m)
       return res
     }
   }

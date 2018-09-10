@@ -10,7 +10,7 @@
         <div class="q-my-sm">{{$t(d)}}</div>
       </div>
     </div>
-    <q-scroll-area style="height: calc(100% - 100px)">
+    <q-scroll-area :style="calcHeight">
       <div class="full-width row inline border-bottom" v-for="(weekData, i) in monthData" :key="i">
       <div
         :class="`calendar-cell calendar-month-cell col q-subheading ${('time' in dayData && dayData.time === currentDay.time ? 'calendar-selected-cell' : '')} ${(dayData && dayData.time === todayStart ? 'calendar-today' : '')}`"
@@ -51,12 +51,11 @@ export default {
       TODAY: state => state.TODAY,
       weekDaysShortNames: state => state.weekDaysShortNames || [],
       monthNames: state => state.monthNames || [],
-      schedules: state => state.schedules || {},
-      currentDay: state => state.calendar_current_day || {},
-      scheduleDetails: state => { return state.scheduleDetails || {} }
+      currentDay: state => state.calendar_current_day || {}
+      // scheduleDetails: state => state.scheduleDetails || {}
     }),
     schedule_id () {
-      return this.$route && this.$route.params ? this.$route.params.id : null
+      return this.$route && this.$route.params ? +this.$route.params.id : null
     },
     schedule () {
       return this.schedules[this.schedule_id]
@@ -95,17 +94,21 @@ export default {
       }
       return result
     },
+    // collect day time values
     dayTimeItemsInfo () {
       let res = {}
       let schId = this.schedule_id
       this.monthData.forEach(week => {
         week.forEach(d => {
           if (d && d.time && d.fullTime) {
-            res[d.time] = this.$store.getters.dayTimeItems(schId, d.fullTime) || []
+            res[d.time] = this.dayTimeItems(schId, d.fullTime) || []
           }
         })
       })
       return res
+    },
+    calcHeight () {
+      return `height: ${Math.min(51 * this.monthData.length, document.body.offsetHeight - 200)}px`
     }
   },
   methods: {

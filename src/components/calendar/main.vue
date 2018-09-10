@@ -20,12 +20,12 @@
         :label="$t('day')"
         slot="title"
       />
-      <q-tab
+      <!-- q-tab
         name="tab-agenda"
         icon="view_agenda"
         :label="$t('agenda')"
         slot="title"
-      />
+      / -->
 
       <q-tab-pane name="tab-month" class="calendar-tab-pane-month q-pa-none">
         <calendar-month v-on:calendar-change-mode="onChangeMode($event)" :time="currentTime"/>
@@ -36,9 +36,9 @@
       <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week q-pa-none">
         <calendar-single-day v-on:calendar-change-mode="onChangeMode($event)" :time="currentTime"/>
       </q-tab-pane>
-      <q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda q-pa-none">
+      <!-- q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda q-pa-none">
         <calendar-agenda v-on:calendar-change-mode="onChangeMode($event)" :time="currentTime"/>
-      </q-tab-pane>
+      </q-tab-pane -->
     </q-tabs>
   </div>
 </template>

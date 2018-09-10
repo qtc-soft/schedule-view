@@ -11,8 +11,49 @@ export default {
     isAuthenticated () {
       return this.$store.getters.isAuthenticated
     }
+    // vocabulary: {
+    //   _get_err: `${this.$t('error_element_geted')}, ${this.$t('code_error')}`,
+    //   _post_err: `${this.$t('error_element_created')}, ${this.$t('code_error')}`,
+    //   _put_err: `${this.$t('error_element_updated')}, ${this.$t('code_error')}`,
+    //   _delete_err: `${this.$t('error_element_deleted')}, ${this.$t('code_error')}`
+    // }
+  },
+  // TODO: use lazy: true
+  asyncComputed: {
+    // object backends
+    schedules: {
+      lazy: true,
+      async get () {
+        let res = await this.$store.dispatch('getSchedules', `${this.$t('error_element_geted')}, `)
+        return res
+      },
+      default: {}
+    },
+    scheduleDetails: {
+      lazy: true,
+      async get () {
+        let res = await this.$store.dispatch('getScheduleDetails', `${this.$t('error_element_geted')}, `)
+        return res
+      },
+      default: {}
+    }
   },
   methods: {
+    //
+    dayTimeItems (scheduleId, fullTime) {
+      let schData = this.scheduleDetails ? this.scheduleDetails[scheduleId] : null
+      if (!schData) {
+        return []
+      }
+      // start of day with time 'fullTime'
+      let dayStart = date.startOfDate(fullTime, 'day')
+      // end of day with time 'fullTime'
+      let dayEnd = date.endOfDate(fullTime, 'day')
+      return schData.details.filter(d => {
+        // filter all schedule times with getting interval
+        return fullTime && date.isBetweenDates(this.convertTimeToMili(d.time), dayStart, dayEnd)
+      })
+    },
     // load authData from cookies
     loadFromCookieToStore () {
       let authData = Cookies.get('sch-authData')
@@ -47,7 +88,7 @@ export default {
       this._notify(msg, detailMessage, 'negative')
     },
     // default notify by array errors
-    defaultNotifyByErrors (errors) {
+    defaultNotifyByErrors (msg, errors) {
       let reasons = []
       for (let i in errors) {
         let reason = errors[i].reason
@@ -70,7 +111,8 @@ export default {
         }
         reasons.push(reason)
       }
-      this.notifyNegative(`Error getting Units from API: ${reasons.join()}`)
+      msg = msg || this.$t('acc')
+      this.notifyNegative(`${msg}: ${reasons.join()}`)
     },
     // to format-date
     applyFormatDate (value) {
@@ -87,6 +129,12 @@ export default {
         result = parseInt(color.substr(1), 16)
       }
       return result
+    },
+    convertTimeToSec (val) {
+      return Math.round(val / 1000)
+    },
+    convertTimeToMili (val) {
+      return Math.round(val * 1000)
     }
   }
 }

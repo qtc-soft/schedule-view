@@ -57,9 +57,11 @@ export default {
   },
   computed: {
     ...mapState({
-      menuItem: store => store.menu_item,
-      schedules: store => store.schedules
+      menuItem: store => store.menu_item
     }),
+    activeMenuItem () {
+      return this.$store.state.menu_item || {}
+    },
     menuLeftPanel () {
       return [{
         id: '-1',
@@ -70,26 +72,15 @@ export default {
         id: '0',
         key: 'options',
         label: this.$t('account_settings'),
-        pageName: 'AccountOptions'
+        pageName: 'SettingsPage'
       }, {
         id: '1',
-        key: 'instruments',
-        label: this.$t('instruments'),
+        key: 'schedules',
+        label: this.$t('all_schedules'),
+        sublabel: `${this.$t('total')}: ${this.schedules ? Object.keys(this.schedules).length : 0}`,
+        pageName: 'ScheduleList',
         expanded: false,
-        items: [
-          {
-            id: '1.1',
-            key: 'schedules',
-            label: this.$t('all_schedules'),
-            pageName: 'ScheduleList',
-            items: this.getScheduleMenuList()
-          }, {
-            id: '1.2',
-            key: 'social',
-            label: this.$t('publish'),
-            pageName: 'AccountSocial'
-          }
-        ]
+        items: this.getScheduleMenuList()
       }, {
         id: '2',
         key: 'payment',
@@ -100,6 +91,12 @@ export default {
         key: 'reports',
         label: this.$t('reports'),
         pageName: 'AccountReports'
+      }, {
+        id: '4',
+        key: 'logout',
+        label: this.$t('exit'),
+        pageName: 'IndexPage',
+        method: this.logout
       }]
     }
   },
@@ -113,17 +110,9 @@ export default {
       let res = []
       for (let id in this.schedules) {
         let sch = this.schedules[id]
-        res.push({id: `1.1.${sch.id}`, label: sch.name, pageName: 'Schedule', pageData: {id: sch.id}})
+        res.push({id: `1.1.${sch.id}`, key: `sch-${sch.id}`, label: sch.name, pageName: 'ScheduleDetails', pageData: {id: sch.id}})
       }
       return res
-    }
-  },
-  async mounted () {
-    let sheduleItems = await this.$dbAPI.getSchedules()
-    if (sheduleItems && sheduleItems.result) {
-      this.$store.commit('INIT_ITEMS', {type: 'shedules', items: sheduleItems.result})
-    } else {
-      // this.logout()
     }
   }
 }

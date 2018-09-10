@@ -5,7 +5,7 @@
       <div class="col month q-headline text-center">{{dayTitle}}</div>
       <div class="col arrow-right cursor-pointer text-center" style="min-width: 30px;max-width: 30px"><q-btn icon="keyboard_arrow_right" @click.native="onForwardDay()"/></div>
     </div>
-    <q-scroll-area class="full-width" style="height: calc(100% - 200px);">
+    <q-scroll-area class="full-width" :style="calcHeight">
       <div class="row q-subheading calendar-day-cell border-bottom"  v-for="(h, i) in dayData" :key="i">
         <div class="col-1 q-pa-sm">{{h.label}}</div>
         <div class="col-11"></div>
@@ -38,13 +38,16 @@ export default {
     },
     dayData () {
       let result = []
-      for (let h = 0, l = 24; h <= l; h++) {
+      for (let h = 0, l = 24; h < l; h++) {
         result.push({
           h: h, // hour
           label: h + this.$t('h')
         })
       }
       return result
+    },
+    calcHeight () {
+      return `height: ${Math.min(100 * 24, document.body.offsetHeight - 300)}px`
     }
   },
   watch: {

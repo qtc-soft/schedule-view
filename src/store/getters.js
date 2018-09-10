@@ -2,7 +2,7 @@
 export const someGetter = (state) => {
 }
 */
-import { date } from 'quasar'
+// import { date } from 'quasar'
 
 export default {
   isAuthenticated (state, getters) {
@@ -18,19 +18,41 @@ export default {
     }
     return state.authenticatedData || null
   },
-  // return all day times for schedule
-  dayTimeItems: (state) => (scheduleId, fullTime) => {
-    let details = state.scheduleDetails[scheduleId]
-    if (!details) {
-      return []
+  getItemByName: (state) => (itemsType, name) => {
+    let items = state[itemsType]
+    let item
+    if (items) {
+      for (let id in items) {
+        if (items[id].name === name) {
+          item = items[id]
+          break
+        }
+      }
     }
-    // start of day with time 'fullTime'
-    let dayStart = date.startOfDate(fullTime, 'day')
-    // end of day with time 'fullTime'
-    let dayEnd = date.endOfDate(fullTime, 'day')
-    return details.filter(d => {
-      // filter all schedule times with getting interval
-      return fullTime && date.isBetweenDates(d.time, dayStart, dayEnd)
-    })
+    return item
+  },
+  // get schedule details from storage
+  getScheduleDetail: (state) => (scheduleId, timeInSec) => {
+    // result variable
+    let result = null
+    // schedule data variable
+    let schData
+    // if schedule data already exists
+    if (scheduleId) {
+      schData = state.scheduleDetails ? state.scheduleDetails[scheduleId] : null
+      if (schData && schData.details) {
+        // find time with equal time value
+        let foundedTimeData
+        schData.details.some((d, i) => {
+          let res = d.time === timeInSec
+          if (res) {
+            foundedTimeData = d
+          }
+          return res
+        })
+        result = foundedTimeData
+      }
+    }
+    return result
   }
 }

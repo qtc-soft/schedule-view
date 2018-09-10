@@ -102,7 +102,7 @@ export default {
         phone: this.form.phone
       }
     },
-    async registration () {
+    async registration (m) {
       this.$v.form.$touch()
       if (this.$v.form.$error === false) {
         let resp = await this.$dbAPI.registration(this.collectData(), false)
@@ -111,7 +111,7 @@ export default {
         } else {
           // if error
           if (resp.data.errors) {
-            this.defaultNotifyByErrors(resp.data.errors)
+            this.defaultNotifyByErrors(m, resp.data.errors)
           } else {
             this.notifyNegative(this.$t('failed_login'), `Error ${resp.status}: ${resp.statusText}`)
           }

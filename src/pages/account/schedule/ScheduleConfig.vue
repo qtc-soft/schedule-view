@@ -1,82 +1,62 @@
 <template>
-  <div>
-    <q-card>
-      <q-card-main>
-        <q-item>
-          <q-field :count="200" dense class="full-width">
-            <q-input
-              clearable
-              v-model="schedule.name"
-              type="text"
-              @blur="$v.schedule.name.$touch"
-              @keyup.enter="registration"
-              :error="$v.schedule.name.$error"
-              :float-label="$t('schedule_name')"
-              :maxlength="200"
-            />
-          </q-field>
-        </q-item>
-        <q-item>
-          <q-field :count="200" dense class="full-width">
-            <q-input
-              clearable
-              v-model="schedule.description"
-              type="textarea"
-              @input="$v.schedule.description.$touch"
-              :error="$v.schedule.description.$error"
-              :float-label="$t('description')"
-              :maxlength="200"
-              :max-height="50"
-            />
-          </q-field>
-        </q-item>
-      </q-card-main>
-      <q-card-actions align="end">
-        <q-btn :label="$t('back')" @click="$router.back()"/>
-        <q-btn color="primary" :label="$t('ok')" @click="onScheduleConfigSave" />
-      </q-card-actions>
-    </q-card>
-  </div>
+  <!--fields and actions-->
+  <schedule-form :schedule="schedule" :saveCallback="update"></schedule-form>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { required, minLength, maxLength } from 'vuelidate/lib/validators'
+import ScheduleForm from './ScheduleForm'
 
 export default {
-  name: 'schedule-config',
-  data () {
-    return {
-      schedule: {}
-    }
+  name: 'schedule-update',
+  components: {
+    ScheduleForm
   },
-  computed: {
-    ...mapState({
-      schedules: state => state.schedules
-    })
-  },
-  validations: {
+  // computed: {
+  //   schedule () {
+  //     return this.$route.params ? {...this.schedules[this.$route.params.id]} : {}
+  //   }
+  // },
+  asyncComputed: {
+    // model User
     schedule: {
-      name: {required, minLength: minLength(4)},
-      description: {required, maxLength: maxLength(200)}
+      async get () {
+        // result getting data
+        let res = {}
+        let respData = await this.$dbAPI.getSchedules({ids: [this.$route.params.id]})
+        // if result
+        if (respData && respData.result && respData.result[0]) {
+          res = respData.result[0]
+          // if not result
+        } else {
+          this.notifyNegative(this.$t('error_element_geted'))
+        }
+        return res
+      },
+      default: {}
     }
   },
   methods: {
-    onScheduleConfigSave () {
-      this.$v.$touch()
-      // if validate
-      if (this.$v.$error === false) {
-        this.$store.commit('SAVE_SCHEDULE', this.schedule)
-        this.$router.push({name: 'ScheduleList'})
+    // create schedule
+    async update (data, afterSaveCallback) {
+      // create schedule with unique name
+      let scheduleItem = this.$store.getters.getItemByName('schedules', data.name)
+      // if such item already exists
+      if (scheduleItem && scheduleItem.id) {
+        this.notifyWarning('element_name_exists', data.name)
+      } else {
+        // send request to API
+        let response = await this.$dbAPI.updateSchedules([data])
+        if (response.result && response.result.length) {
+          // update cache
+          this.$store.commit('SCHEDULE', response.result[0])
+          // call form method
+          afterSaveCallback()
+        }
       }
     }
-  },
-  mounted () {
-    this.schedule = this.$route.params ? this.schedules[this.$route.params.id] || {} : {}
   }
 }
 </script>
 
-<style scoped>
-
+<style>
 </style>

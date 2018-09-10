@@ -59,21 +59,22 @@ export default {
     }
   },
   methods: {
-    async login () {
+    async login (m) {
       this.$v.form.$touch()
       if (this.$v.form.$error === false) {
         let resp = await this.$dbAPI.login(this.form.login, this.form.password, false)
         // if response ok
         if (resp && resp.result) {
           this.$store.dispatch('login', resp.result)
+          this.$router.push({name: 'IndexPage'})
         } else {
           // if error
           if (resp.data.errors) {
-            this.defaultNotifyByErrors(resp.data.errors)
+            this.defaultNotifyByErrors(m, resp.data.errors)
             // if login true
           } else {
             // if response error
-            this.notifyNegative('Login failed', `Error ${resp.status}: ${resp.statusText}`)
+            this.notifyNegative(this.$t('login_failed'), `Error ${resp.status}: ${resp.statusText}`)
           }
         }
       } else {

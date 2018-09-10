@@ -76,55 +76,45 @@ let baseMethods = {
       return resp
     },
 
-    // m: bool - notify or not
+    // m: notify message - notify or not
     // request method GET with base handler
-    async _get (url, getParams, m = true) {
+    async _get (url, getParams, m) {
       // result
       let res = null
       try {
         // response
         let resp = await this._get_request(url, getParams)
 
-        // if (resp.status !== 200) {
-        //   this.methods.notifyNegative('Request failed', 'sss')
-        // }
-
-        // if calc request
-        if (m) {
-          // if result.errors - notify
-          if (resp.data.errors && resp.data.errors.length) {
-            this.methods.defaultNotifyByErrors(resp.data.errors)
-          }
+        // if result.errors - notify
+        if (resp.data.errors && resp.data.errors.length && m) {
+          this.methods.defaultNotifyByErrors(m, resp.data.errors)
         }
         // set return value
         if (resp.data) {
           res = resp.data
         }
       } catch (error) {
+        // error-message
+        // this.methods.notifyNegative(`Request failed, code ${error.response.status}`, error.response.statusText)
         if (m) {
-          // error-message
-          this.methods.notifyNegative(`Request failed, code ${error.response.status}`, error.response.statusText)
-        } else {
-          res = error.response
+          this.methods.notifyNegative(`${m} ${error.response.statusText}`)
         }
+        res = error.response
       }
 
       return res
     },
     // request method POST with base handler
-    async _post (url, getParams, data, m = true) {
+    async _post (url, getParams, data, m) {
       // result
       let res = null
       try {
         // response
         let resp = await this._post_request(url, getParams, data)
 
-        // if calc request
-        if (m) {
-          // if result.errors - notify
-          if (resp.data.errors && resp.data.errors.length) {
-            this.methods.defaultNotifyByErrors(resp.data.errors)
-          }
+        // if result.errors - notify
+        if (resp.data.errors && resp.data.errors.length && m) {
+          this.methods.defaultNotifyByErrors(m, resp.data.errors)
         }
         // set return value
         if (resp.data) {
@@ -132,29 +122,26 @@ let baseMethods = {
         }
       } catch (error) {
         // error-message
+        // this.methods.notifyNegative(`Request failed, code ${error.response.status}`, error.response.statusText)
         if (m) {
-          this.methods.notifyNegative(`Request failed, code ${error.response.status}`, error.response.statusText)
-        } else {
-          res = error.response
+          this.methods.notifyNegative(`${m} ${error.response.statusText}`)
         }
+        res = error.response
       }
 
       return res
     },
     // request method PUT with base handler
-    async _put (url, getParams, data, m = true) {
+    async _put (url, getParams, data, m) {
       // result
       let res = null
       try {
         // response
         let resp = await this._put_request(url, getParams, data)
 
-        // if calc request
-        if (m) {
-          // if result.errors - notify
-          if (m && resp.data.errors && resp.data.errors.length) {
-            this.methods.defaultNotifyByErrors(resp.data.errors)
-          }
+        // if result.errors - notify
+        if (resp.data.errors && resp.data.errors.length && m) {
+          this.methods.defaultNotifyByErrors(m, resp.data.errors[0])
         }
         // set return value
         if (resp.data) {
@@ -162,13 +149,16 @@ let baseMethods = {
         }
       } catch (error) {
         // error-message
-        this.methods.notifyNegative(`Request failed, code ${error.response.status}`, error.response.statusText)
+        // this.methods.notifyNegative(`Request failed, code ${error.response.status}`, error.response.statusText)
+        if (m) {
+          this.methods.notifyNegative(`${m} ${error.response.statusText}`)
+        }
       }
 
       return res
     },
     // request method DELETE with base handler
-    async _delete (url, getParams, m = true) {
+    async _delete (url, getParams, m) {
       // result
       let res = null
       try {
@@ -176,11 +166,9 @@ let baseMethods = {
         let resp = await this._del_request(url, getParams)
 
         // if calc request
-        if (m) {
-          // if result.errors - notify
-          if (resp.data.errors && resp.data.errors.length) {
-            this.methods.defaultNotifyByErrors(resp.data.errors)
-          }
+        // if result.errors - notify
+        if (resp.data.errors && resp.data.errors.length && m) {
+          this.methods.defaultNotifyByErrors(m, resp.data.errors[0])
         }
         // set return value
         if (resp.data) {
@@ -188,7 +176,10 @@ let baseMethods = {
         }
       } catch (error) {
         // error-message
-        this.methods.notifyNegative(`Request failed, code ${error.response.status}`, error.response.statusText)
+        // this.methods.notifyNegative(`Request failed, code ${error.response.status}`, error.response.statusText)
+        if (m) {
+          this.methods.notifyNegative(`${m} ${error.response.statusText}`)
+        }
       }
 
       return res

@@ -24,5 +24,34 @@ export default {
   },
   social ({commit, state}, data) {
     commit('SOCIAL', data)
+  },
+  async getSchedules ({commit, state}, errMsg) {
+    if (!state.schedules) {
+      // request
+      let respData = await Vue.dbAPI.getSchedules({}, errMsg)
+      // if result
+      if (respData.result && respData.result.length) {
+        // object schedules
+        let schedules = {}
+        for (let i in respData.result) {
+          schedules[respData.result[i].id] = respData.result[i]
+        }
+        // save scheduless
+        commit('SCHEDULES', schedules)
+      }
+    }
+    return state.schedules
+  },
+  async getScheduleDetails ({commit, state}, errMsg) {
+    if (!state.scheduleDetails) {
+      // request
+      let respData = await Vue.dbAPI.getScheduleDetails({}, errMsg)
+      // if result
+      if (respData.result && respData.result.length) {
+        // save schedule details
+        commit('SCHEDULE_DETAILS', respData.result[0])
+      }
+    }
+    return state.scheduleDetails
   }
 }

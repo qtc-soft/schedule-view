@@ -13,35 +13,28 @@ export default {
   MENU_ITEM (state, data) {
     Vue.set(state, 'menu_item', data)
   },
-  INIT_ITEMS (state, data) {
-    let res = {}
-    data.items.forEach(d => { res[d.id] = d })
-    Vue.set(state, data.type, res)
+  // init all schedules
+  SCHEDULES (state, data) {
+    Vue.set(state, 'schedules', data)
   },
-  SCHEDULE_DETAILS_ADD (state, data) {
+  // update single schedule
+  SCHEDULE (state, data) {
+    Vue.set(state.schedules, data.id, data)
+  },
+  SCHEDULE_REMOVE (state, id) {
+    Vue.delete(state.schedules, id)
+  },
+  SCHEDULE_DETAILS (state, data) {
+    Vue.set(state, 'scheduleDetails', data)
+  },
+  SCHEDULE_DETAIL (state, data) {
     let schData
     if (data && 'schedule_id' in data) {
       schData = state.scheduleDetails[data.schedule_id]
-    }
-    if (schData && data.detail) {
-      // find time with equal time value
-      let foundedTimeIndex
-      let foundedTimeData
-      schData.some((d, i) => {
-        let res = d.time === data.detail.time
-        if (res) {
-          foundedTimeIndex = i
-          foundedTimeData = d
-        }
-        return res
-      })
-      // if detail already exists incriment clients counter
-      if (foundedTimeData) {
-        foundedTimeData.clients++
-        Vue.set(state.scheduleDetails, foundedTimeIndex, foundedTimeData)
-      // if not founded add new schedule detail
+      if (schData) {
+        schData.details.push(data)
       } else {
-        schData.push(data.detail)
+        Vue.set(state.scheduleDetails, data.schedule_id, {details: [data], orders: []})
       }
     }
   },
@@ -50,16 +43,11 @@ export default {
     if (data && 'schedule_id' in data) {
       schData = state.scheduleDetails[data.schedule_id]
     }
-    if (schData && data.detail) {
-      let newDetails = schData.filter(d => d.time !== data.detail.time)
-      Vue.set(state.scheduleDetails, data.schedule_id, newDetails)
+    if (schData) {
+      let newDetails = schData.details.filter(d => d.time !== data.detail.time)
+      let newSchData = {...schData, details: newDetails}
+      Vue.set(state.scheduleDetails, data.schedule_id, newSchData)
     }
-  },
-  SAVE_SCHEDULE (state, data) {
-    Vue.set(state.schedules, data.id, data)
-  },
-  REMOVE_SCHEDULE (state, id) {
-    Vue.delete(state.schedules, id)
   },
   CALENDAR_MODE (state, value) {
     Vue.set(state, 'calendar_mode', value)

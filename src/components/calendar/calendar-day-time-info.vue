@@ -1,11 +1,11 @@
 <template>
   <div class="column inline q-pa-sm">
-    <div class="row" style="min-width: 270px" v-if="showDetails && dayInfoItems.length">
+    <div class="row" style="min-width: 270px" v-if="showDetails && dayTimeItemsInfo.length">
       <div class="row inline q-my-lg">
         <calendar-day-time-chip
           class="col"
-          v-if="dayInfoItems.length"
-          v-for="(dayInfoItem, i) in dayInfoItems"
+          v-if="dayTimeItemsInfo.length"
+          v-for="(dayInfoItem, i) in dayTimeItemsInfo"
           :key="i"
           :dayTimeInfo="dayInfoItem"
           v-on:select="onChipSelect"
@@ -45,12 +45,10 @@ export default {
       TODAY: state => state.TODAY,
       weekDaysFullNames: state => state.weekDaysFullNames,
       monthNames: state => state.monthNames || [],
-      currentDay: state => state.calendar_current_day || {},
-      schedules: state => { return state.schedules || {} },
-      scheduleDetails: state => { return state.scheduleDetails || {} }
+      currentDay: state => state.calendar_current_day || {}
     }),
     schedule_id () {
-      return this.$route && this.$route.params ? this.$route.params.id || 0 : 0
+      return this.$route && this.$route.params ? +this.$route.params.id : null
     },
     schedule () {
       return this.schedules[this.schedule_id]
@@ -62,14 +60,14 @@ export default {
         return ''
       }
     },
-    dayInfoItems () {
-      return this.$store.getters.dayTimeItems(this.schedule_id, this.currentDay.fullTime)
+    dayTimeItemsInfo () {
+      return this.dayTimeItems(this.schedule_id, this.currentDay.fullTime)
     }
   },
   methods: {
     onAddTime (evt) {
       if (evt && evt.time) {
-        this.$store.commit('SCHEDULE_DETAILS_ADD', {
+        this.$store.commit('SCHEDULE_DETAILS', {
           schedule_id: this.schedule_id,
           detail: {
             time: this.currentDay.time + evt.time, // evt.time is houre in milliseconds
@@ -83,10 +81,7 @@ export default {
       this.chipTimeInfo = dayInfo
     },
     onChipRemove (dayInfo) {
-      this.$store.commit('SCHEDULE_DETAILS_REMOVE', {
-        schedule_id: this.schedule_id,
-        detail: dayInfo
-      })
+      this.$store.commit('SCHEDULE_DETAILS_REMOVE', {schedule_id: this.schedule_id, ...dayInfo})
     }
   }
 }

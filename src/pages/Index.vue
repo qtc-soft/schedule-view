@@ -18,6 +18,18 @@
           <div>Опция автоматического подтверждения бронировани избавит вас от необходимости тратить время на обзвон клиентов. Электронный журнал учета позволит получать отчетность за любой период времени, а следовательно принимать грамотные решения, направленные на развитие вашео бизнеса.</div>
         </div>
       </div>
+      <hr />
+      <div class="full-width q-pa-md">
+        <div class="q-title text-primary q-mb-md" style="height: 50px">Получайте отчетность, анализируйте, принимайте решения, действуйте</div>
+      </div>
+      <hr />
+      <div class="full-width q-pa-md">
+        <div class="q-title text-primary q-mb-md" style="height: 50px">Современные технологии для вашего бизнеса</div>
+      </div>
+      <hr />
+      <div class="full-width q-pa-md">
+        <div class="q-title text-primary q-mb-md" style="height: 50px">{{$t('contacts')}}</div>
+      </div>
     </div>
   </q-page>
 </template>

@@ -5,7 +5,7 @@
       <div class="col month q-headline text-center">{{getCurrentYear()}}   {{$t(monthNames[getCurrentMonth()])}}</div>
       <div class="col arrow-right cursor-pointer text-center" style="min-width: 30px;max-width: 30px"><q-btn icon="keyboard_arrow_right" @click.native="onForwardWeek()"/></div>
     </div>
-    <q-scroll-area class="full-width column border-bottom" style="height: calc(100% - 200px);">
+    <q-scroll-area class="full-width column" :style="calcHeight">
       <div class="row border-bottom" v-for="(dayData, i) in weekData" :key="i">
         <div
           :class="`calendar-cell calendar-week-day col q-subheading content-center ${(dayData && dayData.time === (currentDay ? currentDay.time : 0) ? 'calendar-selected-cell' : '')} ${(dayData && dayData.time === todayStart ? 'calendar-today' : '')}`"
@@ -59,18 +59,13 @@ export default {
       weekDaysFullNames: state => state.weekDaysFullNames,
       weekDaysShortNames: state => state.weekDaysShortNames || [],
       monthNames: state => state.monthNames || [],
-      schedules: state => state.schedules || {},
-      currentDay: state => state.calendar_current_day || {},
-      scheduleDetails: state => { return state.scheduleDetails || {} }
+      currentDay: state => state.calendar_current_day || {}
     }),
     schedule_id () {
-      return this.$route && this.$route.params ? this.$route.params.id : null
+      return this.$route && this.$route.params ? +this.$route.params.id : null
     },
     schedule () {
       return this.schedules[this.schedule_id]
-    },
-    details () {
-      return this.scheduleDetails[this.schedule_id] || []
     },
     // today begining
     todayStart () { return date.startOfDate(this.TODAY, 'day').getTime() },
@@ -80,13 +75,16 @@ export default {
         let dayData = {
           fullTime: startTime,
           time: startTime.getTime(),
-          items: this.$store.getters.dayTimeItems(this.schedule_id, startTime),
+          items: this.dayTimeItems(this.schedule_id, startTime),
           label: `${startTime.getDate()}, ${this.$t(this.weekDaysShortNames[i])}`
         }
         startTime = date.addToDate(startTime, {days: 1})
         return dayData
       })
       return res
+    },
+    calcHeight () {
+      return `height: ${Math.min(36 * 7, document.body.offsetHeight - 200)}px`
     }
   },
   methods: {
@@ -117,10 +115,7 @@ export default {
       }
     },
     onChipRemove (dayInfo) {
-      this.$store.commit('SCHEDULE_DETAILS_REMOVE', {
-        schedule_id: this.schedule_id,
-        detail: dayInfo
-      })
+      this.$store.commit('SCHEDULE_DETAILS_REMOVE', {schedule_id: this.schedule_id, ...dayInfo})
     }
   },
   mounted () {

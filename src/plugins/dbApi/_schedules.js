@@ -11,13 +11,13 @@ export default {
       let res = await this._get(`schedules/${getValueByParam(params.ids)}`, calcGetParams(params, ['name']), m)
       return res
     },
-    async createSchedules (data, params, m = true) {
+    async createSchedules (data, params, m) {
       params = params || {}
       // data from request
       let res = await this._post('schedules', calcGetParams(params, ['fields']), data, m)
       return res
     },
-    async updateSchedules (data, params, m = true) {
+    async updateSchedules (data, params, m) {
       params = params || {}
       let res = await this._put('schedules', calcGetParams(params, ['fields']), data, m)
       return res
@@ -25,7 +25,7 @@ export default {
     async deleteSchedules (params, m) {
       params = params || {}
       // data from request
-      let res = await this._delete(`schedules/${getValueByParam(params.ids)}`, {})
+      let res = await this._delete(`schedules/${getValueByParam(params.ids)}`, {}, m)
       return res
     }
   }
