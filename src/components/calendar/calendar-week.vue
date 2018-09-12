@@ -74,7 +74,7 @@ export default {
       let res = new Array(7).fill(0).map((d, i) => {
         let dayData = {
           fullTime: startTime,
-          time: startTime.getTime(),
+          time: this.convertTimeToSec(startTime.getTime()),
           items: this.dayTimeItems(this.schedule_id, startTime),
           label: `${startTime.getDate()}, ${this.$t(this.weekDaysShortNames[i])}`
         }
@@ -119,7 +119,7 @@ export default {
     }
   },
   mounted () {
-    let dayStart = date.startOfDate('time' in this.currentDay ? this.currentDay.time : this.TODAY, 'day')
+    let dayStart = date.startOfDate('time' in this.currentDay ? this.convertTimeToMili(this.currentDay.time) : this.TODAY, 'day')
     this.currentTime = date.subtractFromDate(dayStart, {days: dayStart.getDay() - 1})
   }
 }

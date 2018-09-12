@@ -12,6 +12,7 @@ export default {
   registration: 'Регистрация',
   profile: 'Профиль',
   account: 'Профиль',
+  organization: 'Организация',
   reports: 'Отчеты',
   payment: 'Платежи',
   instruments: 'Инструменты',

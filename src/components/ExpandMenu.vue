@@ -44,7 +44,7 @@ export default {
       if (menuItem.method) {
         menuItem.method.call()
       }
-      this.$forceUpdate()
+      // this.$forceUpdate()
     }
   }
 }

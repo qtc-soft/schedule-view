@@ -26,8 +26,8 @@
             </q-item>
             <q-item>
               <q-item-main :label="authData.email">
-                <div class="link" @click="$router.push({name: 'SettingsPage'})">{{$t('account_settings')}}</div>
-                <div class="link">{{$t('написать_администратору')}}</div>
+                <div class="link" @click="$router.push({name: 'ConfigPage'})">{{$t('account_settings')}}</div>
+                <div class="link">{{$t('send_message_to_admin')}}</div>
               </q-item-main>
               <q-item-side align="right" class="cursor-pointer" @click.native="logout()">
                 <q-icon name="exit_to_app"/>

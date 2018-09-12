@@ -17,7 +17,6 @@ export default {
   //   }
   // },
   asyncComputed: {
-    // model User
     schedule: {
       async get () {
         // result getting data
@@ -26,6 +25,7 @@ export default {
         // if result
         if (respData && respData.result && respData.result[0]) {
           res = respData.result[0]
+          console.log(333, res)
           // if not result
         } else {
           this.notifyNegative(this.$t('error_element_geted'))
@@ -45,7 +45,7 @@ export default {
         this.notifyWarning('element_name_exists', data.name)
       } else {
         // send request to API
-        let response = await this.$dbAPI.updateSchedules([data])
+        let response = await this.$dbAPI.updateSchedules([data], {}, `${this.$t('error_element_updated')}, `)
         if (response.result && response.result.length) {
           // update cache
           this.$store.commit('SCHEDULE', response.result[0])

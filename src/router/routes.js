@@ -16,7 +16,7 @@ const routes = [
     redirect: {name: 'ScheduleList'},
     children: [
       // settings
-      { path: '/options', name: 'SettingsPage', component: () => import('pages/account/options'), meta: {label: 'account_settings', icon: 'settings'} },
+      { path: '/config', name: 'ConfigPage', component: () => import('pages/account/settings/config'), meta: {label: 'account_settings', icon: 'settings'} },
       // instruments
       { path: '/schedule-list', name: 'ScheduleList', component: () => import('pages/account/schedule/ScheduleList'), meta: {label: 'all_schedules', icon: 'schedule'} },
       { path: '/schedule-config/:id', name: 'ScheduleConfig', component: () => import('pages/account/schedule/ScheduleConfig'), meta: {label: 'schedule_config', icon: 'schedule'} },
@@ -28,7 +28,7 @@ const routes = [
       // reports
       { path: '/reports', name: 'AccountReports', component: () => import('pages/account/reports'), meta: {label: 'reports', icon: 'report'} }
     ],
-    meta: {label: 'account_panel'}
+    meta: {label: 'account_settings'}
   }
 ]
 

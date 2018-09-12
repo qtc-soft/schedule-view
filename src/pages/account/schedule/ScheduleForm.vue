@@ -7,8 +7,6 @@
             clearable
             v-model="scheduleModel.name"
             type="text"
-            @blur="$v.scheduleModel.name.$touch"
-            :error="$v.scheduleModel.name.$error"
             :float-label="$t('name')"
             :maxlength="200"
           />
@@ -20,8 +18,6 @@
             clearable
             v-model="scheduleModel.description"
             type="textarea"
-            @input="$v.scheduleModel.description.$touch"
-            :error="$v.scheduleModel.description.$error"
             :float-label="$t('description')"
             :maxlength="200"
             :max-height="50"
@@ -45,8 +41,6 @@
             clearable
             v-model="scheduleModel.email"
             type="email"
-            @input="$v.scheduleModel.email.$touch"
-            :error="$v.scheduleModel.email.$error"
             :float-label="$t('email')"
             :max-height="50"
           />
@@ -73,7 +67,7 @@
 </template>
 
 <script>
-import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
+// import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
   name: 'schedule-form',
@@ -83,13 +77,13 @@ export default {
       scheduleModel: {}
     }
   },
-  validations: {
-    scheduleModel: {
-      name: {required, minLength: minLength(4)},
-      description: {required, maxLength: maxLength(200)},
-      email: {email}
-    }
-  },
+  // validations: {
+  //   scheduleModel: {
+  //     name: {required, minLength: minLength(4)},
+  //     description: {required, maxLength: maxLength(200)},
+  //     email: {email}
+  //   }
+  // },
   watch: {
     schedule (newVal) {
       this.scheduleModel = newVal

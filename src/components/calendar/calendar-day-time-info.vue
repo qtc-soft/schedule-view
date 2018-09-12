@@ -5,9 +5,9 @@
         <calendar-day-time-chip
           class="col"
           v-if="dayTimeItemsInfo.length"
-          v-for="(dayInfoItem, i) in dayTimeItemsInfo"
+          v-for="(timeItem, i) in dayTimeItemsInfo"
           :key="i"
-          :dayTimeInfo="dayInfoItem"
+          :dayTimeInfo="timeItem"
           v-on:select="onChipSelect"
           v-on:remove="onChipRemove"
         />
@@ -65,18 +65,6 @@ export default {
     }
   },
   methods: {
-    onAddTime (evt) {
-      if (evt && evt.time) {
-        this.$store.commit('SCHEDULE_DETAILS', {
-          schedule_id: this.schedule_id,
-          detail: {
-            time: this.currentDay.time + evt.time, // evt.time is houre in milliseconds
-            clients: evt.clients,
-            description: evt.description
-          }
-        })
-      }
-    },
     onChipSelect (dayInfo) {
       this.chipTimeInfo = dayInfo
     },

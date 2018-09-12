@@ -19,7 +19,7 @@
         @click="onDayClick($event, dayData)"
       >
         <span class="calendar-month-date cursor-pointer">
-          {{dayData.date}}
+          {{dayData.label}}
         </span>
         <div class="calendar-month-date-text q-caption" v-show="dayTimeItemsInfo[dayData.time] && dayTimeItemsInfo[dayData.time].length">
           <div style="bottom: 0">{{0}} / {{dayTimeItemsInfo[dayData.time] ? dayTimeItemsInfo[dayData.time].length : 0}}</div>
@@ -33,13 +33,10 @@
 <script>
 import { date } from 'quasar'
 import { mapState } from 'vuex'
-import CalendarDayEvents from './calendar-day-events'
-import CalendarDayTimeInfo from './calendar-day-time-info'
 
 export default {
   name: 'CalendarMonth',
   props: ['time'],
-  components: {CalendarDayEvents, CalendarDayTimeInfo},
   data () {
     return {
       // current time
@@ -52,7 +49,6 @@ export default {
       weekDaysShortNames: state => state.weekDaysShortNames || [],
       monthNames: state => state.monthNames || [],
       currentDay: state => state.calendar_current_day || {}
-      // scheduleDetails: state => state.scheduleDetails || {}
     }),
     schedule_id () {
       return this.$route && this.$route.params ? +this.$route.params.id : null
@@ -82,7 +78,11 @@ export default {
           let res
           // debugger
           if (startTime.getMonth() === startMonth) {
-            res = {fullTime: startTime, time: startTime.getTime(), date: startTime.getDate()}
+            res = {
+              fullTime: startTime,
+              time: this.convertTimeToSec(startTime.getTime()),
+              label: startTime.getDate()
+            }
           } else {
             res = {date: ''}
           }

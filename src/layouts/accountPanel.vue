@@ -70,9 +70,9 @@ export default {
         pageName: 'IndexPage'
       }, {
         id: '0',
-        key: 'options',
+        key: 'acc_config',
         label: this.$t('account_settings'),
-        pageName: 'SettingsPage'
+        pageName: 'ConfigPage'
       }, {
         id: '1',
         key: 'schedules',

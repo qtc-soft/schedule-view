@@ -2,7 +2,9 @@
   <div class="calendar-day-time-chip cursor-pointer" @click="onChipClick" style="min-width: 74px;max-width: 74px">
     <div class="calendar-day-time-chip-time row inline items-center full-width">
       <div class="col" style="padding: 0 5px">{{title}}</div>
-      <div class="col text-right" style="min-width: 24px; max-width: 24px"><q-icon class="calendar-day-time-chip-remove " size="24px" name="clear" @click.native="onChipRemoveClick"/></div>
+      <div class="col text-right" style="min-width: 24px; max-width: 24px">
+        <q-icon class="calendar-day-time-chip-remove " size="24px" name="clear" @click.native="onChipRemoveClick"/>
+      </div>
     </div>
     <div class="calendar-day-time-chip-members full-width bg-primary"></div>
   </div>
@@ -15,7 +17,8 @@ export default {
   name: 'calendar-day-time-chip',
   computed: {
     time () {
-      return (this.dayTimeInfo || {}).time
+      // convert to mili-sec
+      return this.convertTimeToMili((this.dayTimeInfo || {}).time)
     },
     title () {
       return date.formatDate(this.time, 'HH:mm')

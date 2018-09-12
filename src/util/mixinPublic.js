@@ -134,6 +134,7 @@ export default {
       return Math.round(val / 1000)
     },
     convertTimeToMili (val) {
+      val = val || 0
       return Math.round(val * 1000)
     }
   }

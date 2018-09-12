@@ -46,6 +46,7 @@ module.exports = function (ctx) {
           }
         }
       },
+      port: 4444,
       // https: true,
       open: false // opens browser window automatically
     },
