@@ -19,6 +19,7 @@ export default {
   all_schedules: 'Все расписания',
   schedule: 'Расписание',
   schedules: 'Расписания',
+  settings: 'Настройки',
   create_schedule: 'Создать расписание',
   edit_schedule: 'Редактировать расписание',
   schedule_create: 'Создать расписание',

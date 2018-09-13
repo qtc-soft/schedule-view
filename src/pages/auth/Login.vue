@@ -66,7 +66,7 @@ export default {
         // if response ok
         if (resp && resp.result) {
           this.$store.dispatch('login', resp.result)
-          this.$router.push({name: 'IndexPage'})
+          this.$router.push({name: 'MenuPage'})
         } else {
           // if error
           if (resp.data.errors) {

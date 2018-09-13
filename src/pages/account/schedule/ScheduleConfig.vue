@@ -38,20 +38,13 @@ export default {
   methods: {
     // create schedule
     async update (data, afterSaveCallback) {
-      // create schedule with unique name
-      let scheduleItem = this.$store.getters.getItemByName('schedules', data.name)
-      // if such item already exists
-      if (scheduleItem && scheduleItem.id) {
-        this.notifyWarning('element_name_exists', data.name)
-      } else {
-        // send request to API
-        let response = await this.$dbAPI.updateSchedules([data], {}, `${this.$t('error_element_updated')}, `)
-        if (response.result && response.result.length) {
-          // update cache
-          this.$store.commit('SCHEDULE', response.result[0])
-          // call form method
-          afterSaveCallback()
-        }
+      // update schedule
+      let response = await this.$dbAPI.updateSchedules([data], {}, `${this.$t('error_element_updated')}, `)
+      if (response.result && response.result.length) {
+        // update cache
+        this.$store.commit('SCHEDULE', response.result[0])
+        // call form method
+        afterSaveCallback()
       }
     }
   }

@@ -1,8 +1,8 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
-      <q-toolbar>
-        <q-btn
+      <q-toolbar class="q-px-lg">
+        <!-- q-btn
           flat
           dense
           round
@@ -10,31 +10,32 @@
           aria-label="Menu"
         >
           <q-icon name="menu" />
-        </q-btn>
-        <!-- q-btn
+        </q-btn -->
+        <q-btn
           flat
           dense
           round
           @click="$router.back()"
-          v-if="menuItem && menuItem.id.includes('.')"
+          v-if="this.$route.meta.back"
         >
           <q-icon name="arrow_back" />
-        </q-btn -->
+        </q-btn>
         <q-toolbar-title>
           {{$t(this.$route.meta.label)}}
           <div slot="subtitle">{{$t(this.$route.meta.sublabel)}}</div>
         </q-toolbar-title>
+        <q-icon name="exit_to_app" @click.native="logout()"/>
       </q-toolbar>
     </q-layout-header>
 
-    <q-layout-drawer
+    <!-- q-layout-drawer
       v-model="showLeftPanel"
       :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
     >
       <q-scroll-area class="full-width full-height">
         <expand-menu :data="menuLeftPanel"></expand-menu>
       </q-scroll-area>
-    </q-layout-drawer>
+    </q-layout-drawer -->
 
     <q-page-container class="fixed full-width full-height">
       <router-view class="full-width full-height q-pa-md"/>
@@ -67,7 +68,7 @@ export default {
         id: '-1',
         key: 'home',
         label: this.$t('home'),
-        pageName: 'IndexPage'
+        pageName: 'MenuPage'
       }, {
         id: '0',
         key: 'acc_config',
@@ -95,7 +96,7 @@ export default {
         id: '4',
         key: 'logout',
         label: this.$t('exit'),
-        pageName: 'IndexPage',
+        pageName: 'MenuPage',
         method: this.logout
       }]
     }
@@ -105,6 +106,7 @@ export default {
     logout () {
       this.$dbAPI.logout(this.$store.state.sid)
       this.$store.dispatch('logout')
+      this.$router.push({name: 'LoginPage'})
     },
     getScheduleMenuList () {
       let res = []
@@ -113,6 +115,14 @@ export default {
         res.push({id: `1.1.${sch.id}`, key: `sch-${sch.id}`, label: sch.name, pageName: 'ScheduleDetails', pageData: {id: sch.id}})
       }
       return res
+    }
+  },
+  async created () {
+    // check auth
+    let resp = await this.$dbAPI.isAuth()
+    console.log(resp)
+    if (!resp.result) {
+      this.logout()
     }
   }
 }

@@ -67,7 +67,7 @@
 </template>
 
 <script>
-// import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
+import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
   name: 'schedule-form',
@@ -77,13 +77,13 @@ export default {
       scheduleModel: {}
     }
   },
-  // validations: {
-  //   scheduleModel: {
-  //     name: {required, minLength: minLength(4)},
-  //     description: {required, maxLength: maxLength(200)},
-  //     email: {email}
-  //   }
-  // },
+  validations: {
+    scheduleModel: {
+      name: {required, minLength: minLength(4)},
+      description: {required, maxLength: maxLength(200)},
+      email: {email}
+    }
+  },
   watch: {
     schedule (newVal) {
       this.scheduleModel = newVal

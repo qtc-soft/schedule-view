@@ -5,7 +5,8 @@ export default {
   api_paths: {
     login: 'user-login',
     logout: 'user-logout',
-    registration: 'user-registration'
+    registration: 'user-registration',
+    is_auth: 'is-auth'
   },
   apiMethods: {
     // login
@@ -25,6 +26,12 @@ export default {
       // data from request
       let res = await this._post(this.api_paths.registration, {}, data, m)
       return res
+    },
+    // is-auth, check sid
+    async isAuth (m = false) {
+      // data from request
+      let respData = await this._post(this.api_paths.is_auth, {}, {}, m)
+      return respData
     }
   }
 }
